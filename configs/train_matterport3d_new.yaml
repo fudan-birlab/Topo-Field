@@ -1,0 +1,426 @@
+defaults:
+  - _self_
+  - override hydra/launcher: submitit_slurm
+
+project: clip_field_self
+deterministic_id: false
+device: cuda
+use_cache: false
+batch_size: 12544
+interval: 1
+
+# Dataset details
+dataset_type: matterport3d
+dataset_path: data/Matterport3D/v1/scans/17DRP5sb8fy/17DRP5sb8fy
+cache_result: true
+cache_path: data/Matterport3D/detic_labeled_matterport3d_region_new_dataset_17DRP5sb8fy.pt
+saved_dataset_path: data/Matterport3D/detic_labeled_matterport3d_region_new_dataset_17DRP5sb8fy.pt
+
+# Data loading and labelling specs
+sample_freq: 3
+detic_threshold: 0.4
+subsample_prob: 0.1
+use_lseg: false
+use_extra_classes: false
+use_gt_classes_in_detic: true
+
+# Neural field specs
+model_type: hash
+num_grid_levels: 18
+level_dim: 8  # So total dimension 144
+per_level_scale: 2
+mlp_depth: 1
+mlp_width: 600
+log2_hashmap_size: 20
+
+# Training specs
+seed: 42
+epochs: 100
+exp_decay_coeff: 0.5
+image_to_label_loss_ratio: 1.0
+label_to_image_loss_ratio: 1.0
+region_to_label_loss_ratio: 1.0
+instance_loss_scale: 100.0
+epoch_size: 3e6
+dataparallel: false
+num_workers: 10
+
+# Debug purposes, visualize Detic results
+visualize_detic_results: false
+detic_visualization_path: "detic_matterport3d_debug"
+
+# Cache only runs are for building per-dataset caches, which can be used for multi-run later.
+cache_only_run: false
+
+# Learning rate data
+lr: 1e-4
+weight_decay: 0.003
+betas:
+  - 0.9
+  - 0.999
+
+save_directory: "clip_implicit_model_matterport3d_new_17DRP5sb8fy"
+
+web_models:
+  clip: "ViT-B/32"
+  # sentence: "all-mpnet-base-v2"
+  sentence: "~/.cache/torch/sentence_transformers"
+
+hydra:
+  callbacks:
+    log_job_return:
+      _target_: hydra.experimental.callbacks.LogJobReturnCallback
+
+  launcher:
+    timeout_min: 180
+    cpus_per_task: 10
+    gpus_per_node: 1
+    tasks_per_node: 1
+    mem_gb: 128
+    nodes: 1
+    name: ${hydra.job.name}
+    _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+    signal_delay_s: 120
+    max_num_timeout: 1
+    additional_parameters: {}
+    array_parallelism: 256
+    setup: null
+    partition: learnfair
+
+# Add any custom labels you want here
+custom_labels:
+  - screen
+  - coat hanger
+  - urn
+  - shelving
+  - fire alarm
+  - place mat
+  - wood
+  - exercise bike
+  - candlestick
+  - wall cabinet
+  - ledge
+  - shower wall
+  - mat
+  - baseboard
+  - sheet
+  - footrest
+  - rug
+  - coat
+  - control
+  - door frame
+  - top
+  - toilet paper dispenser
+  - hanger
+  - piano
+  - laundry basket
+  - garage door opener
+  - shower bench
+  - fruit bowl
+  - glass
+  - bedpost
+  - remove
+  - shelf /w clutter
+  - soap dish
+  - fireplace
+  - lampshade
+  - door stopper
+  - shower
+  - shower curtain
+  - candle
+  - window shade
+  - basin
+  - object
+  - ceiling
+  - molding
+  - wall
+  - carpet
+  - pew
+  - shower soap shelf
+  - dress
+  - bar
+  - altar
+  - plant
+  - coffee table
+  - dresser
+  - trashcan
+  - headboard
+  - gym equipment
+  - decoration
+  - kitchen cabinet
+  - computer desk
+  - window
+  - plate
+  - paneling
+  - wall cubby
+  - highchair
+  - bush
+  - pillow
+  - whiteboard
+  - toilet paper
+  - side table
+  - picture frame
+  - light fixture
+  - toilet paper holder
+  - stand
+  - bowl of fruit
+  - vanity
+  - treadmill
+  - speaker
+  - tray
+  - massage table
+  - power breaker box
+  - purse
+  - decorative plate
+  - statue
+  - tv
+  - bag
+  - closet shelf
+  - container
+  - bowl
+  - plush toy
+  - ceiling lamp
+  - bottle
+  - bidet
+  - bedframe
+  - beam
+  - fencing
+  - box
+  - light switch
+  - ottoman
+  - couch
+  - radiator
+  - tissue box
+  - exercise mat
+  - post
+  - teapot
+  - duct
+  - dishwasher
+  - clothes hanger rod
+  - pool table
+  - photo
+  - backsplash
+  - oven
+  - faucet
+  - paper towel dispenser
+  - sink
+  - hose
+  - fence
+  - step
+  - countertop
+  - chandelier
+  - coffee maker
+  - exercise equipment
+  - arch
+  - bottle of soap
+  - bathroom cabinet
+  - monitor
+  - balcony railing
+  - staircase
+  - food
+  - kitchen shelf
+  - bathroom counter
+  - refrigerator
+  - fan
+  - footstool
+  - closet
+  - frame /outside
+  - sofa set
+  - window frame
+  - bin
+  - soap dispenser
+  - stove
+  - mirror
+  - clothes dryer
+  - robe
+  - handrail
+  - electric wire casing
+  - wardrobe
+  - closet shelving
+  - lounge chair
+  - guitar
+  - stuffed animal
+  - pedestal
+  - frame
+  - fire extinguisher
+  - end table
+  - shower door
+  - chimney
+  - light
+  - projector
+  - ornament
+  - sign
+  - smoke alarm
+  - handle
+  - door handle
+  - swivel chair
+  - drawer
+  - pillar
+  - skylight
+  - stair
+  - tree
+  - tablet
+  - panel
+  - shower ceiling
+  - window curtain
+  - blinds
+  - toilet
+  - sculpture
+  - drum
+  - shower handle
+  - kitchen appliance
+  - kitchen utensil
+  - exit sign
+  - toilet brush
+  - coat rack
+  - case
+  - paper
+  - knob
+  - dining table
+  - chair
+  - pool
+  - cushion
+  - bulletin board
+  - landing
+  - bust
+  - towel
+  - garage door
+  - desk
+  - doorway
+  - floor
+  - towel bar
+  - toy
+  - banister
+  - shower curtain rod
+  - thermostat
+  - ceiling fan
+  - shrubbery
+  - rope
+  - switch
+  - furniture
+  - ball
+  - closet rod
+  - paper towel
+  - window /otherroom
+  - vent
+  - bathtub
+  - pot
+  - hat
+  - air conditioner
+  - barricade
+  - keyboard
+  - showerhead
+  - water cooler
+  - tv stand
+  - window/door
+  - curtain rod
+  - chest of drawers
+  - kitchen counter
+  - laptop
+  - tissue paper
+  - bath cabinet
+  - ceiling duct
+  - bed sheet
+  - display case
+  - person
+  - shelf
+  - ridge
+  - smoke detector
+  - dining chair
+  - door
+  - ladder
+  - sconce
+  - vase
+  - basket
+  - doll
+  - bed
+  - flowerpot
+  - unknown /otherroom
+  - file cabinet
+  - cabinet
+  - office chair
+  - book
+  - pipe
+  - clothes hamper
+  - blanket
+  - shower floor
+  - floor /otherroom
+  - stool
+  - window dormer
+  - scale
+  - globe
+  - picture
+  - jar
+  - sofa chair
+  - roof
+  - board
+  - lamp
+  - clothes
+  - table lamp
+  - paneling /otherroom
+  - rack
+  - handbag
+  - display cabinet
+  - chest
+  - range hood
+  - wall /otherroom
+  - curtain
+  - printer
+  - desk chair
+  - table
+  - bathroom stall
+  - easel
+  - storage shelving
+  - umbrella
+  - bedside lamp
+  - floor lamp
+  - curtain valence
+  - grass
+  - archway
+  - clothes hanger
+  - seat
+  - cloth
+  - luggage
+  - office table
+  - ceiling pipe
+  - computer
+  - heater
+  - toiletry
+  - bathroom utensil
+  - cup
+  - unknown
+  - telephone
+  - tap
+  - shampoo
+  - washbasin
+  - railing
+  - pan
+  - shoe
+  - massage bed
+  - plate of food
+  - car
+  - easy chair
+  - clock
+  - figure
+  - counter
+  - decorative mask
+  - closet door
+  - bookshelf
+  - ceiling /otherroom
+  - clutter
+  - bucket
+  - trinket
+  - locker
+  - armchair
+  - weight
+  - nightstand
+  - washing machine
+  - candelabra
+  - bench
+  - microwave
+  - soap
+  - kitchen island
+
+
+# Or just comment it out for SCANNET 200 labels.
+# custom_labels: null
