@@ -1,6 +1,6 @@
 # Topo-Field: Topometric mapping with Brain-inspired Hierarchical Layout-Object-Position Fields
 
-[[Website]](https://jarvishou829.github.io/Topo-Field/) [[Code]](https://github.com/fudan-birlab/Topo-Field)
+[[Website]](https://jarvishou829.github.io/Topo-Field/) [[Code]](https://github.com/fudan-birlab/Topo-Field) [[Supp]](./docs/supp.pdf)
 
 Authors: [Jiawei Hou](https://jarvishou829.github.io), Wenhao Guan, Longfei Liang, Jianfeng Feng, Xiangyang Xue, Taiping Zeng.
 
